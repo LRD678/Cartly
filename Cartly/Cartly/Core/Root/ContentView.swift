@@ -1,5 +1,3 @@
-
-
 import SwiftUI
 
 struct ContentView: View {
@@ -32,7 +30,8 @@ struct ContentView: View {
 struct HomeView: View {
     var body: some View {
         VStack {
-            // top bar
+            
+            // Top bar
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(.systemBackground))
                 .shadow(radius: 5)
@@ -51,12 +50,29 @@ struct HomeView: View {
             
             Spacer()
             
+            // Bottom box with meal calendar
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(.systemBackground))
                 .shadow(radius: 5)
                 .frame(width: .infinity, height: 400)
                 .padding()
+                .overlay(
+                    CalendarView()
+                        .padding(40)
+                    )
+
         }
+    }
+}
+
+struct CalendarView: View {
+    @State private var selectedDate = Date()
+    
+    var body: some View {
+        DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
+        
+            // Full calendar view switch to week view per row
+            .datePickerStyle(.graphical)
     }
 }
 
@@ -69,6 +85,7 @@ struct RecipeView: View {
 
     var body: some View {
         VStack {
+            
             // Top bar
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(.systemBackground))
@@ -82,7 +99,6 @@ struct RecipeView: View {
                 )
                 .padding()
             
-            
             // Recipe grid
             // Next week add functionality once I have a database for recipes as well as a popup to add your own which will add a recipe to to the database which will get rendered here
             ScrollView {
@@ -90,14 +106,20 @@ struct RecipeView: View {
                 LazyVGrid(columns: columns, spacing: 20) {
                     
                     // Temp generated grid
-                    ForEach(0..<20) { item in
+                    ForEach(0..<50) { item in
                         
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color(.systemBackground))
                             .shadow(radius: 5)
-                            .frame(height: 120)
+                            .frame(height: 160)
                             .overlay(
-                                Text("Panel \(item + 1)")
+                                VStack {
+                                    Text("Recipe Placeholder")
+                                    Image(systemName: "fork.knife.circle")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                    Text("Dinner, Lunch")
+                                }
                             )
                     }
                 }
