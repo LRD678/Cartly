@@ -9,7 +9,7 @@ struct Recipe: Identifiable {
     
     // Parameters
     let title : String
-    let icon : String
+    let icon : Image
     let mealType : String
     let calories : Int
 }

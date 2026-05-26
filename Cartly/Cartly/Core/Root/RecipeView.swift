@@ -9,7 +9,8 @@ import SwiftUI
 
 struct RecipeView: View {
     
-    
+    @State private var showPopup = false
+    @State var selectedRecipe: Recipe?
     
     let columns = [
         GridItem(.flexible()),
@@ -42,12 +43,13 @@ struct RecipeView: View {
                     
                     // Temp generated grid
                     ForEach(recipes) { recipe in
-                        RecipeCard(recipe: recipe)
+                        RecipeCard(showPopup: $showPopup, selectedRecipe: $selectedRecipe, recipe: recipe)
                     }
                     
                     // Outside button that will always be there
                     Button(action: {
-                        // Show popup
+                        showPopup = true
+                        selectedRecipe = nil
                     }) {
                         Text("Add recipe")
                             .frame(maxWidth: .infinity, minHeight: 160)
@@ -64,15 +66,9 @@ struct RecipeView: View {
         }
         
         // Create new overlay
-        //.overlay {
-        //if appState.showPopup {
-        
-        // Overlay the whole screen and show a dark background
-        //Color.black.opacity(0.4)
-        //.ignoresSafeArea()
-        
-        // Display popup
-        //RecipePopup(showPopup: showPopup)
+        .sheet(isPresented: $showPopup) {
+            RecipePopup(showPopup: $showPopup, recipe: $selectedRecipe)
+        }
     }
     
 }

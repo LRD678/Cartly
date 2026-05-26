@@ -2,12 +2,17 @@ import SwiftUI
 
 struct RecipeCard: View {
     
+    @Binding var showPopup: Bool
+    @Binding var selectedRecipe : Recipe?
+    
     let recipe : Recipe
     
     var body : some View {
         
         Button(action: {
-            //showPopup = true
+            showPopup = true
+            selectedRecipe = recipe
+            
         }) {
             
             VStack {
@@ -16,7 +21,7 @@ struct RecipeCard: View {
                 Text(recipe.title)
                 
                 // Set the icon
-                Image(systemName: recipe.icon)
+                recipe.icon
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
