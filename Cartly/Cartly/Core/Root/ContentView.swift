@@ -30,9 +30,7 @@ struct ContentView: View {
     }
 }
 
-
 // MIGRATE CALENDAR AND PROFILE INTO SEPARATE SCRIPTS !!!
-
 
 struct CalendarView: View {
     @State private var selectedDate = Date()

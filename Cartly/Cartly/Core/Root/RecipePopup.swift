@@ -3,6 +3,9 @@ import PhotosUI
 
 struct RecipePopup: View {
     
+    // Recipe DB reference
+    @StateObject var recipeData = RecipeData()
+    
     @Binding var showPopup: Bool
     
     @State private var selection = "Dinner"
@@ -49,7 +52,6 @@ struct RecipePopup: View {
                             .scaledToFit()
                             .frame(width: 80, height: 80)
                             .padding()
-                        
                     }
                 }
             }
@@ -86,6 +88,12 @@ struct RecipePopup: View {
             
             // Tell recipeView to close popup
             Button("Close") {
+                if let recipe = recipe,
+                       let index = recipeData.recipes.firstIndex(where: {
+                           $0.id == recipe.id
+                       }) {
+                        print("Recipe found")
+                    }
                 showPopup = false
             }
         }

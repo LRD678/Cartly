@@ -9,11 +9,13 @@ import SwiftUI
 
 @main
 struct CartlyApp: App {
-    //@StateObject var appState = AppState()
+    
+    @StateObject var recipeData = RecipeData()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                //.environmentObject(appState)
+                .environmentObject(recipeData)
         }
     }
 }

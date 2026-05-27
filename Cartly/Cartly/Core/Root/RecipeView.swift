@@ -9,6 +9,9 @@ import SwiftUI
 
 struct RecipeView: View {
     
+    // Recipe DB reference
+    @EnvironmentObject var recipeData: RecipeData
+    
     @State private var showPopup = false
     @State var selectedRecipe: Recipe?
     
@@ -40,9 +43,8 @@ struct RecipeView: View {
                 
                 LazyVGrid(columns: columns, spacing: 20) {
                     
-                    
                     // Temp generated grid
-                    ForEach(recipes) { recipe in
+                    ForEach(recipeData.recipes) { recipe in
                         RecipeCard(showPopup: $showPopup, selectedRecipe: $selectedRecipe, recipe: recipe)
                     }
                     
@@ -57,7 +59,7 @@ struct RecipeView: View {
                             .cornerRadius(20)
                             .shadow(radius: 5)
                     }
-                    .frame(maxWidth: .infinity) // makes button take full width
+                    .frame(maxWidth: .infinity)
                     .padding(.horizontal)
                     
                 }
