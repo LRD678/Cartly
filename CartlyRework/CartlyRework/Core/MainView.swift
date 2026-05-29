@@ -1,9 +1,8 @@
+// Primary view that controls switching between tabs
+
 import SwiftUI
 
-// Global variables
-//@EnvironmentObject var appState: AppState
-
-struct ContentView: View {
+struct MainView: View {
     
     var body: some View {
         
@@ -31,19 +30,7 @@ struct ContentView: View {
     }
 }
 
-// MIGRATE CALENDAR AND PROFILE INTO SEPARATE SCRIPTS !!!
-
-struct CalendarView: View {
-    @State private var selectedDate = Date()
-    
-    var body: some View {
-        DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
-        
-            // Full calendar view switch to week view per row
-            .datePickerStyle(.graphical)
-    }
-}
 
 #Preview {
-    ContentView()
+    MainView()
 }

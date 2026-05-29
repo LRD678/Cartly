@@ -1,10 +1,14 @@
+// Popup when you click on a recipe card
+
 import SwiftUI
 import PhotosUI
+import SwiftData
 
 struct RecipePopup: View {
     
-    // Recipe DB reference
     @Environment(\.modelContext) private var context
+    
+    @Binding var recipe : Recipe?
     
     @Binding var showPopup: Bool
     
@@ -12,15 +16,11 @@ struct RecipePopup: View {
     let options = ["Breakfast", "Lunch", "Dinner", "Snack", "Other"]
     
     @State private var selectedItem : PhotosPickerItem?
-    @State private var selectedImage : Image?
+    @State private var selectedImageData : Data?
     @State private var recipeName = ""
     @State private var calories = 0
     
-    // Pass in recipe and take parameters there to autofill and then if theres no recipe keep all parameters empty
-    @Binding var recipe : Recipe?
-    
     var body: some View {
-        
         VStack(spacing: 20) {
             
             // Recipe name
@@ -37,15 +37,15 @@ struct RecipePopup: View {
                 
                 VStack {
                     
-                    if let selectedImage {
-                        selectedImage
-                        // Circle mask when we have a selected image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                        
-                    } else {
+                    if let imageData = selectedImageData,
+                           let uiImage = UIImage(data: imageData) {
+
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                        } else {
                         // Otherwise just use base photo image
                         Image(systemName: "photo")
                             .resizable()
@@ -57,14 +57,12 @@ struct RecipePopup: View {
             }
             // Update the image in the mask to the new selected image whenever the selected image changes
             .onChange(of: selectedItem) {
-                // Task so we dont slow down run time
+
                 Task {
-                    // Wait for image to load
-                    if let data = try? await selectedItem?.loadTransferable(type: Data.self),
-                       // Set the image
-                       let uiImage = UIImage(data: data) {
-                        
-                        selectedImage = Image(uiImage: uiImage)
+
+                    if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
+
+                        selectedImageData = data
                     }
                 }
             }
@@ -88,27 +86,33 @@ struct RecipePopup: View {
             
             // Tell recipeView to close popup
             Button("Close") {
-                if let recipe = recipe,
-                       let index = recipeData.recipes.firstIndex(where: {
-                           $0.id == recipe.id
-                       }) {
-                        print("Recipe found")
-                    }
+                if let recipe {
+
+                    // Set the recipes variables to ours when we close so it updates
+                    recipe.name = recipeName
+                    recipe.mealType = selection
+                    recipe.calories = calories
+                    recipe.imageData = selectedImageData
+                }
+                
                 showPopup = false
             }
         }
         .padding()
         .onAppear {
+
+            // Set our own variables to the recipes variables
             if let recipe {
-                        recipeName = recipe.title
-                        selection = recipe.mealType
-                        calories = recipe.calories
-                        selectedImage = recipe.icon
-                        }
+                recipeName = recipe.name
+                selection = recipe.mealType
+                calories = recipe.calories
+                selectedImageData = recipe.imageData
+            }
+            
         }
     }
 }
 
 #Preview {
-    RecipePopup(showPopup: .constant(true), recipe: .constant(nil))
+    RecipePopup(recipe: .constant(nil), showPopup: .constant(false))
 }

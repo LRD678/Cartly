@@ -4,7 +4,8 @@ struct RecipeCard: View {
     
     @Binding var showPopup: Bool
     @Binding var selectedRecipe : Recipe?
-
+    
+    var recipe : Recipe
     
     var body : some View {
         
@@ -17,13 +18,18 @@ struct RecipeCard: View {
             VStack {
                 
                 // Set the title
-                Text(recipe.title)
+                Text(recipe.name)
                 
                 // Set the icon
-                recipe.icon
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
+                if let imageData = recipe.imageData,
+                   let uiImage = UIImage(data: imageData) {
+
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 50)
+
+                }
                 
                 // Set the meal type / calories
                 Text(recipe.mealType)

@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    
+    @Environment(\.modelContext) private var context
+    
     var body: some View {
         VStack {
+            
+            Button("baserecipe") {
+                context.insert(Recipe(id: UUID(), title: "Pasta", icon: Image(systemName: "house"), mealType: "Dinner", calories: 0))
+            }
             
             // Top bar
             RoundedRectangle(cornerRadius: 20)
@@ -40,7 +48,6 @@ struct HomeView: View {
                     CalendarView()
                         .padding(40)
                     )
-
         }
     }
 }

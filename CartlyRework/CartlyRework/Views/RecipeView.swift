@@ -1,17 +1,25 @@
 //
 //  RecipeView.swift
-//  Cartly
+//  CartlyRework
 //
-//  Created by Student on 2026-05-25.
+//  Created by Student on 2026-05-28.
 //
 
 import SwiftUI
+import SwiftData
 
 struct RecipeView: View {
     
     @State private var showPopup = false
     @State var selectedRecipe: Recipe?
     
+    // Context to edit / add recipes
+    @Environment(\.modelContext) private var context
+    
+    // List of all the recipes
+    @Query var recipes: [Recipe]
+    
+    // Defining grid columns
     let columns = [
         GridItem(.flexible()),
         GridItem(.flexible())
@@ -21,7 +29,13 @@ struct RecipeView: View {
         
         VStack {
             
-            // Top bar
+            Button("debug erase")  {
+                for recipe in recipes {
+                        context.delete(recipe)
+                    }
+            }
+            
+            // Top bar *just for decor
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(.systemBackground))
                 .shadow(radius: 5)
@@ -34,21 +48,27 @@ struct RecipeView: View {
                 )
                 .padding()
             
+            Button("Add Test Recipe") {
+
+                let recipe = Recipe(name: "Pasta", mealType: "Dinner", calories: 0, imageName: "fork.knife")
+
+                context.insert(recipe)
+            }
+            
             // Recipe grid
-            // Next week add functionality once I have a database for recipes as well as a popup to add your own which will add a recipe to to the database which will get rendered here
             ScrollView {
                 
                 LazyVGrid(columns: columns, spacing: 20) {
                     
-                    // Temp generated grid
+                    // Generate cards based off the recipes
                     ForEach(recipes) { recipe in
                         RecipeCard(showPopup: $showPopup, selectedRecipe: $selectedRecipe, recipe: recipe)
+                        //showPopup: $showPopup, selectedRecipe: $selectedRecipe, recipe: recipe
                     }
                     
                     // Outside button that will always be there
                     Button(action: {
                         showPopup = true
-                        selectedRecipe = nil
                     }) {
                         Text("Add recipe")
                             .frame(maxWidth: .infinity, minHeight: 160)
@@ -63,11 +83,10 @@ struct RecipeView: View {
             }
             .padding()
         }
-        
-        // Create new overlay
         .sheet(isPresented: $showPopup) {
-            RecipePopup(showPopup: $showPopup, recipe: $selectedRecipe)
+            RecipePopup(recipe: $selectedRecipe, showPopup: $showPopup)
         }
+        
     }
 }
 

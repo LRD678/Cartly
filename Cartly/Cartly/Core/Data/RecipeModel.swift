@@ -1,15 +1,25 @@
 // Recipe data model
 
+import SwiftData
 import SwiftUI
 
-struct Recipe: Identifiable {
+@Model
+class Recipe {
     
     // Recipe id
-    let id = UUID()
+    var id = UUID()
     
     // Parameters
-    let title : String
-    let icon : Image
-    let mealType : String
-    let calories : Int
+    var title : String
+    var icon : Image
+    var mealType : String
+    var calories : Int
+    
+    init(id: UUID = UUID(), title: String, icon: Image, mealType: String, calories: Int) {
+        self.id = id
+        self.title = title
+        self.icon = icon
+        self.mealType = mealType
+        self.calories = calories
+    }
 }
