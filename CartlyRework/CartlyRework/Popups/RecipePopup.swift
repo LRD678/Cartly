@@ -36,10 +36,9 @@ struct RecipePopup: View {
             ) {
                 
                 VStack {
-                    
+        
                     if let imageData = selectedImageData,
                            let uiImage = UIImage(data: imageData) {
-
                             Image(uiImage: uiImage)
                                 .resizable()
                                 .scaledToFill()
@@ -93,6 +92,8 @@ struct RecipePopup: View {
                     recipe.mealType = selection
                     recipe.calories = calories
                     recipe.imageData = selectedImageData
+                } else {
+                    context.insert(Recipe(name: recipeName, mealType: selection, calories: calories, imageData: selectedImageData))
                 }
                 
                 showPopup = false

@@ -50,7 +50,7 @@ struct RecipeView: View {
             
             Button("Add Test Recipe") {
 
-                let recipe = Recipe(name: "Pasta", mealType: "Dinner", calories: 0, imageName: "fork.knife")
+                let recipe = Recipe(name: "Pasta", mealType: "Dinner", calories: 0, imageData: UIImage(systemName: "fork.knife")?.pngData())
 
                 context.insert(recipe)
             }
@@ -63,12 +63,12 @@ struct RecipeView: View {
                     // Generate cards based off the recipes
                     ForEach(recipes) { recipe in
                         RecipeCard(showPopup: $showPopup, selectedRecipe: $selectedRecipe, recipe: recipe)
-                        //showPopup: $showPopup, selectedRecipe: $selectedRecipe, recipe: recipe
                     }
                     
                     // Outside button that will always be there
                     Button(action: {
                         showPopup = true
+                        selectedRecipe = nil
                     }) {
                         Text("Add recipe")
                             .frame(maxWidth: .infinity, minHeight: 160)
@@ -78,7 +78,6 @@ struct RecipeView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal)
-                    
                 }
             }
             .padding()
