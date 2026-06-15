@@ -2,24 +2,199 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    
+    @State private var selectedTab: Int = 2
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            Text("temp")
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+                .tag(0)
+            
+            Text("sh")
+                .tabItem {
+                    Label("Recipes", systemImage: "fork.knife")
+                }
+                .tag(1)
+            
+            MealView()
+                .tabItem {
+                    Label("Meal Plans", systemImage: "folder.fill")
+                }
+                .tag(2)
+            
+            Text("Settings Screen")
+                .tabItem {
+                    Label("List", systemImage: "cart.fill")
+                }
+                .tag(3)
+        }
+        
+        
+    }
+}
+
+struct MealView: View {
 
     var body: some View {
-        VStack {
-            
-            // Temp top panel
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-                .shadow(radius: 5)
-                .frame(maxWidth: .infinity, maxHeight: 60)
-                .overlay(
-                    HStack {
-                        Text("Meal Plan View")
+
+        NavigationStack {
+
+            ScrollView {
+
+                VStack(spacing: 20) {
+
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(
+                            LinearGradient(
+                                colors: [.green, .mint],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(height: 170)
+                        .overlay(alignment: .leading) {
+
+                            VStack(alignment: .leading, spacing: 8) {
+
+                                Text("Meal Planner")
+                                    .font(.largeTitle.bold())
+
+                                Text("Organize your meals for the week")
+                                    .opacity(0.9)
+
+                                Spacer()
+
+                                Text("18 Meals Planned")
+                                    .font(.headline)
+                            }
+                            .foregroundStyle(.white)
+                            .padding()
+                        }
+
+                    AlbumView()
+
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        Text("Upcoming Meals")
+                            .font(.title2.bold())
+
+                        UpcomingMealRow(
+                            title: "Monday Dinner",
+                            meal: "Chicken Wrap"
+                        )
+
+                        UpcomingMealRow(
+                            title: "Tuesday Lunch",
+                            meal: "Rice Bowl"
+                        )
+
+                        UpcomingMealRow(
+                            title: "Wednesday Breakfast",
+                            meal: "Pasta"
+                        )
                     }
-                    .padding(.horizontal)
-                )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        Text("Recent Activity")
+                            .font(.title2.bold())
+
+                        ActivityRow(
+                            title: "Created June 1–7 Meal Plan"
+                        )
+
+                        ActivityRow(
+                            title: "Added Chicken Wrap to Monday"
+                        )
+
+                        ActivityRow(
+                            title: "Added Pasta to Friday Dinner"
+                        )
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
                 .padding()
-            
-            AlbumView()
+            }
+            .navigationTitle("Meal Plans")
+        }
+    }
+}
+
+struct DashboardCard: View {
+
+    let title: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+
+        VStack(spacing: 6) {
+
+            Text(value)
+                .font(.title2.bold())
+
+            Text(title)
+                .font(.caption)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(color.opacity(0.15))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+struct UpcomingMealRow: View {
+
+    let title: String
+    let meal: String
+
+    var body: some View {
+
+        HStack {
+
+            Image(systemName: "fork.knife.circle.fill")
+                .font(.title2)
+                .foregroundStyle(.green)
+
+            VStack(alignment: .leading) {
+
+                Text(title)
+                    .fontWeight(.semibold)
+
+                Text(meal)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+struct ActivityRow: View {
+
+    let title: String
+
+    var body: some View {
+
+        HStack {
+
+            Circle()
+                .fill(.green)
+                .frame(width: 10)
+
+            Text(title)
+
+            Spacer()
+
+            Text("Today")
+                .foregroundStyle(.secondary)
         }
     }
 }
@@ -39,44 +214,107 @@ struct AlbumView: View {
                 Button {
                     showSheet = true
                 } label: {
-                    VStack(spacing: 2) {
-                        Text("June")
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
 
-                        Text("1–7")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        Text("June 15 – 21")
+                            .font(.title.bold())
                             .foregroundStyle(.primary)
+
+                        Label("Current Week", systemImage: "calendar")
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(.green.opacity(0.15))
+                            .foregroundStyle(.green)
+                            .clipShape(Capsule())
+
+                        Spacer()
+
+                        VStack(alignment: .leading, spacing: 8) {
+
+                            Text("0 Meals Planned")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+
+                            ProgressView(value: 0, total: 21)
+
+                            Text("0% Complete")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .frame(width: 300, height: 300)
+                    .padding()
+                    .frame(width: 320, height: 260)
                     .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.gray.opacity(0.2))
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(Color(.systemBackground))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(Color(.systemGray5), lineWidth: 1)
+                    )
+                    .shadow(
+                        color: .black.opacity(0.08),
+                        radius: 8,
+                        y: 4
                     )
                 }
                 .tag(0)
-                .shadow(radius: 5)
                 .padding(.horizontal, 20)
                 
                 // Card 2 - not functional will update after card 1 is finished and good to go
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.gray.opacity(0.2))
-                    .frame(width: 300, height: 300)
-                    .overlay(
-                        VStack(spacing: 2) {
-                            Text("June")
-                                .font(.headline)
-                                .foregroundStyle(.secondary)
+                Button {
+                    showSheet = true
+                } label: {
 
-                            Text("8-14")
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        Text("June 22 – 28")
+                            .font(.title.bold())
+                            .foregroundStyle(.primary)
+
+                        Label("Future Week", systemImage: "calendar")
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(.orange.opacity(0.15))
+                            .foregroundStyle(.orange)
+                            .clipShape(Capsule())
+
+                        Spacer()
+
+                        VStack(alignment: .leading, spacing: 8) {
+
+                            Text("Not Started")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+
+                            ProgressView(value: 0, total: 21)
+
+                            Text("0% Complete")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
+                    }
+                    .padding()
+                    .frame(width: 320, height: 260)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(Color(.systemBackground))
                     )
-                    .tag(1)
-                    .shadow(radius: 5)
-                    .padding(.horizontal, 20)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(Color(.systemGray5), lineWidth: 1)
+                    )
+                    .shadow(
+                        color: .black.opacity(0.08),
+                        radius: 8,
+                        y: 4
+                    )
+                }
+                .tag(1)
+                .padding(.horizontal, 20)
                 
             }
             .frame(height: 320)
@@ -253,64 +491,87 @@ struct DayMeals {
 struct MealSection: View {
     let title: String
     let recipes: [String]
-
-    // Use binding now so it can save
     @Binding var selected: [String]
 
+    @State private var isExpanded: Bool = true
+
     var body: some View {
-        DisclosureGroup {
-            
-            // Theres a point where making this a grid with images is worth it but not there yet because thats a lot of work
+        VStack(alignment: .leading, spacing: 10) {
 
-            ForEach(recipes, id: \.self) { recipe in
+            // HEADER
+            Button {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                HStack {
+                    Text(title)
+                        .font(.headline)
 
-                Button {
-                    // Toggle on and off based off its already selected
+                    Spacer()
 
-                    if selected.contains(recipe) {
-                        selected.removeAll { $0 == recipe }
-                    } else {
-                        selected.append(recipe)
-                    }
+                    Text("\(selected.count)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
 
-                } label: {
-                    HStack {
-                        Text(recipe)
-                            .foregroundStyle(.primary)
-                            .padding(.vertical, 6)
+                    Image(systemName: "chevron.down")
+                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
 
-                        Spacer()
-
-                        // shows checkmark if selected
-                        if selected.contains(recipe) {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.blue)
+            // ALWAYS IN VIEW HIERARCHY (important fix)
+            VStack(spacing: 0) {
+                ForEach(recipes, id: \.self) { recipe in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            toggle(recipe)
                         }
+                    } label: {
+                        HStack {
+                            Text(recipe)
+                                .foregroundStyle(.primary)
+
+                            Spacer()
+
+                            if selected.contains(recipe) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.blue)
+                            }
+                        }
+                        .padding(.vertical, 14)
+                        .padding(.horizontal, 12)
+                        .opacity(isExpanded ? 1 : 0)
+                        .frame(height: isExpanded ? nil : 0) // collapses safely
+                        .clipped()
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!isExpanded) // prevents accidental taps when closed
+
+                    if recipe != recipes.last {
+                        Divider()
+                            .padding(.leading, 12)
+                            .opacity(isExpanded ? 1 : 0)
                     }
                 }
-                .padding(.horizontal)
             }
-
-        } label: {
-            HStack {
-                Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-
-                Spacer()
-
-                // shows number of selected recipes in this meal
-                Text("\(selected.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.secondarySystemBackground))
+            )
         }
-        .padding(.horizontal)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color(.systemGray5).opacity(0.5))
-        )
+        .padding(.vertical, 6)
+    }
+
+    private func toggle(_ recipe: String) {
+        if let index = selected.firstIndex(of: recipe) {
+            selected.remove(at: index)
+        } else {
+            selected.append(recipe)
+        }
     }
 }
 

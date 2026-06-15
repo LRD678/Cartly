@@ -29,11 +29,11 @@ struct RecipeView: View {
         
         VStack {
             
-            Button("debug erase")  {
-                for recipe in recipes {
-                        context.delete(recipe)
-                    }
-            }
+//            Button("debug erase")  {
+//                for recipe in recipes {
+//                        context.delete(recipe)
+//                    }
+//            }
             
             // Top bar *just for decor
             RoundedRectangle(cornerRadius: 20)
@@ -48,12 +48,12 @@ struct RecipeView: View {
                 )
                 .padding()
             
-            Button("Add Test Recipe") {
-
-                let recipe = Recipe(name: "Pasta", mealType: "Dinner", calories: 0, imageData: UIImage(systemName: "fork.knife")?.pngData())
-
-                context.insert(recipe)
-            }
+//            Button("Add Test Recipe") {
+//
+//                let recipe = Recipe(name: "Pasta", mealType: "Dinner", calories: 0, imageData: UIImage(systemName: "fork.knife")?.pngData())
+//
+//                context.insert(recipe)
+//            }
             
             // Recipe grid
             ScrollView {
